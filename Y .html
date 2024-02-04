@@ -96,6 +96,12 @@
             background-color: #f8f8f8;
             cursor: crosshair;
         }
+        button{
+          border-radius: 30px 30px;
+         
+          color: black;
+          background-color: white;
+        }
     
     
     
@@ -124,9 +130,11 @@
 
       
        <div class="dropdown-content">
-        <input type="range" id="thicknessControl" min="1" max="20" value="2">
-        
+        <input type="range" id="thicknessControl" min="1" max="20" value="2"><br><br>
+        <button onclick="clearContent()">Clear Content</button>
+
       </div>
+     
     </div> 
     
     
@@ -147,7 +155,8 @@
         <div class="dropdown-content">
           
           <label for="colorPicker" ></label>
-    <input type="color" id="colorPicker" name="colorPicker" value="#ff0000" >
+          <input type="color" id="colorPicker" value="#000000">
+    
 
     <div>
         <p><span id="selectedColor"></span></p>
@@ -169,78 +178,15 @@
 
 
 </nav>
+<canvas id="drawingCanvas" width="100%" height="100%"></canvas>
 
-<canvas id="drawingCanvas" width="8500" height="1000"></canvas>
+
     
 
 
 <script>
- document.addEventListener('DOMContentLoaded', function () {
-            const canvas = document.getElementById('drawingCanvas');
-            const ctx = canvas.getContext('2d');
-            let isDrawing = false;
+ 
 
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', stopDrawing);
-            canvas.addEventListener('mouseout', stopDrawing);
-
-            function startDrawing(e) {
-                isDrawing = true;
-                draw(e); // To start drawing immediately at the initial click position
-            }
-            function draw(e) {
-                if (!isDrawing) return;
-
-                ctx.lineWidth = 2;
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = '#000';
-
-                ctx.lineTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
-            }
-
-            function stopDrawing() {
-                isDrawing = false;
-                ctx.beginPath(); // Reset the path when stopping drawing
-            }
-          });
-
-
-
-          document.addEventListener('DOMContentLoaded', function () {
-            const canvas = document.getElementById('drawingCanvas');
-            const ctx = canvas.getContext('2d');
-            const thicknessControl = document.getElementById('thicknessControl');
-            let isDrawing = false;
-
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', stopDrawing);
-            canvas.addEventListener('mouseout', stopDrawing);
-            function startDrawing(e) {
-                isDrawing = true;
-                draw(e); // To start drawing immediately at the initial click position
-            }
-
-            function draw(e) {
-                if (!isDrawing) return;
-
-                ctx.lineWidth = thicknessControl.value;
-                ctx.lineCap = 'round';
-                ctx.strokeStyle = '#000';
-                ctx.lineTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top);
-            }
-            function stopDrawing() {
-                isDrawing = false;
-                ctx.beginPath(); // Reset the path when stopping drawing
-            }
-        });
 
         function setTheme(theme) {
       const body = document.body;
@@ -254,6 +200,81 @@
       }
       
     }
+
+
+
+
+
+
+   
+    
+        function clearContent() {
+            // Get the element by its ID
+            var contentElement = document.getElementById("content");
+
+            // Set the content to an empty string
+            contentElement.innerHTML = "";
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get the canvas and context
+            var canvas = document.getElementById("drawingCanvas");
+            var context = canvas.getContext("2d");
+
+            // Get the color picker input
+            var colorPicker = document.getElementById("colorPicker");
+
+            // Set initial color
+            context.strokeStyle = colorPicker.value;
+
+            // Event listener for color picker change
+            colorPicker.addEventListener("input", function () {
+                context.strokeStyle = colorPicker.value;
+            });
+
+            var isDrawing = false;
+
+            // Event listeners for mouse actions
+            canvas.addEventListener("mousedown", startDrawing);
+            canvas.addEventListener("mousemove", draw);
+            canvas.addEventListener("mouseup", stopDrawing);
+            canvas.addEventListener("mouseout", stopDrawing);
+
+            function startDrawing(e) {
+                isDrawing = true;
+                context.beginPath();
+                context.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+
+                context.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+                context.stroke();
+            }
+
+            function stopDrawing() {
+                isDrawing = false;
+                context.closePath();
+            }
+        });
+
+
+
+
+
   </script>
 
 
